@@ -1,0 +1,69 @@
+name: PetClinic Enterprise Lab
+
+on:
+  push:
+    branches: [ "main" ] # Triggers the pipeline automatically on every code push
+
+permissions:
+  id-token: write  # Crucial! Gives this pipeline permission to request an OIDC Token
+  contents: read   # Allows the pipeline to check out your repository code
+
+env:
+  # CHANGE THESE TO MATCH YOUR JFROG ACCOUNT CONFIGURATION:
+  JF_URL: https://sourabhs.jfrog.io/
+  DOCKER_REGISTRY: https://ssolanki.jfrog.io/artifactory/spring-petclinic-docker/
+  IMAGE_NAME: docker-local/spring-petclinic
+  
+  # Standard environmental variables for JFrog Build Info tracking
+  JFROG_CLI_BUILD_NAME: "petclinic-enterprise-ci"
+  JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest # Launches a clean cloud virtual runner machine
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Install Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Step A: Authenticate to JFrog using OIDC (No passwords or secret keys needed!)
+      - name: Setup JFrog CLI via OIDC
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ env.JF_URL }}
+        with:
+          oidc-provider-name: github-oidc # Must match your JFrog Identity Provider configuration name
+
+      # Step B: Securely configure Maven credentials automatically behind the scenes
+      - name: Configure Maven for Artifactory
+        run: |
+          jf mvnc --repo-resolve-releases spring-petclinic-libs-snapshot --repo-resolve-snapshots spring-petclinic-libs-snapshot
+
+      # Step C: Run tests and let Maven compile the project while tracking dependencies via JFrog CLI
+      - name: Run Tests & Build Jar
+        run: |
+          jf rt build-collect-env
+          jf rt build-add-git
+          jf mvnc clean package -DskipTests=false # Compiles and runs all unit tests!
+
+      # Step D: Log into your private JFrog Docker registry using temporary OIDC credentials
+      - name: Authenticate Docker to JFrog
+        run: |
+          jf docker-login
+
+      # Step E: Build the Docker container using our Dockerfile and push it to Artifactory
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+          jf docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      # Step F: Publish the final Build Info metadata receipt to Artifactory
+      - name: Publish Build Info Metadata
+        run: |
+          jf rt build-publish
