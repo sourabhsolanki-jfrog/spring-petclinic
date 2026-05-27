@@ -11,8 +11,8 @@ permissions:
 env:
   # CHANGE THESE TO MATCH YOUR JFROG ACCOUNT CONFIGURATION:
   JF_URL: https://ssolanki.jfrog.io  # FIX #9: Removed trailing slash
-  DOCKER_REGISTRY: https://ssolanki.jfrog.io  # FIX #5: Removed https:// prefix and path (invalid in image tags)
-  IMAGE_NAME: spring-petclinic-docker
+  DOCKER_REGISTRY: ssolanki.jfrog.io  # FIX #5: Removed https:// prefix and path (invalid in image tags)
+  IMAGE_NAME: spring-petclinic-docker/spring-petclinic
 
   # Standard environmental variables for JFrog Build Info tracking
   JFROG_CLI_BUILD_NAME: "petclinic-enterprise-ci"
