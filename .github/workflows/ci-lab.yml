@@ -10,7 +10,7 @@ permissions:
 
 env:
   # CHANGE THESE TO MATCH YOUR JFROG ACCOUNT CONFIGURATION:
-  JF_URL: https://sourabhs.jfrog.io/
+  JF_URL: https://ssolanki.jfrog.io/
   DOCKER_REGISTRY: https://ssolanki.jfrog.io/artifactory/spring-petclinic-docker/
   IMAGE_NAME: docker-local/spring-petclinic
   
