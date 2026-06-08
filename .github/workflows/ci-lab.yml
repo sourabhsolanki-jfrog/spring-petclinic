@@ -2,7 +2,7 @@ name: PetClinic Enterprise Lab
 
 on:
   push:
-    branches: [ "main" ] # Triggers the pipeline automatically on every code push
+    branches: [ "main" ] # Triggers the pipeline automatically on every code push.1
 
 permissions:
   id-token: write  # Crucial! Gives this pipeline permission to request an OIDC Token
