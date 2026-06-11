@@ -59,7 +59,6 @@ jobs:
       - name: Authenticate Docker to JFrog
         run: |
           jf docker login ${{ env.DOCKER_REGISTRY }}
-          # FIX #2: Replaced non-existent 'jf docker-login' with valid 'jf docker login <registry>'
 
       # Step E: Build the Docker container using our Dockerfile and push it to Artifactory
       - name: Build and Push Docker Image
@@ -68,8 +67,6 @@ jobs:
           jf docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --build-name=${{ env.JFROG_CLI_BUILD_NAME }} \
             --build-number=${{ env.JFROG_CLI_BUILD_NUMBER }}
-          # FIX #3: Image tag now uses just the hostname (ssolanki.jfrog.io), not the full https:// URL
-          # FIX #7: Added --build-name and --build-number to link Docker image to Build Info
 
       # Step F: Publish the final Build Info metadata receipt to Artifactory
       - name: Publish Build Info Metadata
