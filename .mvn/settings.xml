@@ -4,7 +4,7 @@
     <mirrors>
         <mirror>
             <id>spclinic-maven</id>
-            <mirrorOf>*</mirrorOf> <url>https://ssolanki.jfrog.io/artifactory/spring-petclinic-libs-snapshot/</url>
+            <mirrorOf>*</mirrorOf> <url>https://ssolanki.jfrog.io/artifactory/splinci-mavn/</url>
         </mirror>
     </mirrors>
 </settings>
