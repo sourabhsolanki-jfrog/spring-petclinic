@@ -3,7 +3,7 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
     <mirrors>
         <mirror>
-            <id>jfrog-maven-virtual</id>
+            <id>spclinic-maven</id>
             <mirrorOf>*</mirrorOf> <url>https://ssolanki.jfrog.io/artifactory/spring-petclinic-libs-snapshot/</url>
         </mirror>
     </mirrors>
