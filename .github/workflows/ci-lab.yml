@@ -10,8 +10,8 @@ permissions:
 
 env:
   # CHANGE THESE TO MATCH YOUR JFROG ACCOUNT CONFIGURATION:
-  JF_URL: https://ssolanki.jfrog.io  # FIX #9: Removed trailing slash
-  DOCKER_REGISTRY: ssolanki.jfrog.io  # FIX #5: Removed https:// prefix and path (invalid in image tags)
+  JF_URL: https://ssolanki.jfrog.io  
+  DOCKER_REGISTRY: ssolanki.jfrog.io  
   IMAGE_NAME: spring-petclinic-docker/spring-petclinic
 
   # Standard environmental variables for JFrog Build Info tracking
@@ -41,15 +41,10 @@ jobs:
           oidc-provider-name: github-oidc # Must match your JFrog Identity Provider configuration name
 
       # Step B: Securely configure Maven credentials automatically behind the scenes
-      - name: Configure Maven for Artifactory
+      - name: Configure JFrog Maven repo
         run: |
           jf mvnc \
-            --repo-resolve-releases spring-petclinic-libs-release \
-            --repo-resolve-snapshots spring-petclinic-libs-snapshot \
-            --repo-deploy-releases spring-petclinic-libs-release \
-            --repo-deploy-snapshots spring-petclinic-libs-snapshot
-          # FIX #4: Releases now resolve from a release repo (not snapshot)
-          #         Added deploy repos so artifacts can be published
+             --repo-resolve-releases=spclinc-maven
 
       # Step C: Run tests and let Maven compile the project while tracking dependencies via JFrog CLI
       - name: Run Tests & Build Jar
@@ -59,9 +54,6 @@ jobs:
           jf mvn clean package \
             --build-name=${{ env.JFROG_CLI_BUILD_NAME }} \
             --build-number=${{ env.JFROG_CLI_BUILD_NUMBER }}
-          # FIX #1: Changed jf mvnc → jf mvn (mvnc is config-only, mvn runs the build)
-          # FIX #6: Added explicit --build-name and --build-number for Build Info linking
-          # FIX #8: Removed redundant -DskipTests=false (Maven runs tests by default)
 
       # Step D: Log into your private JFrog Docker registry using temporary OIDC credentials
       - name: Authenticate Docker to JFrog
