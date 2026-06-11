@@ -1,4 +1,4 @@
-name: PetClinic Enterprise Lab 
+name: PetClinic Enterprise Lab
 
 on:
   push:
