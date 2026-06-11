@@ -44,7 +44,8 @@ jobs:
       - name: Configure JFrog Maven repo
         run: |
           jf mvnc \
-             --repo-resolve-releases=spclinic-maven
+             --repo-resolve-releases=spclinic-maven \
+             --repo-resolve-snapshots=spclinic-maven
 
       # Step C: Run tests and let Maven compile the project while tracking dependencies via JFrog CLI
       - name: Run Tests & Build Jar
